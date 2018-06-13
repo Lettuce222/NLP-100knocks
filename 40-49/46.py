@@ -12,7 +12,7 @@ if __name__ == '__main__':
     predicate = ''
     head = morph.Chunk([], '', '')
 
-    fout = open('45result.txt', 'w')
+    fout = open('46result.txt', 'w')
     write_flg1 = False
     write_flg2 = False
 
@@ -26,14 +26,20 @@ if __name__ == '__main__':
 
                     # 述語に係る助詞を集める
                     cases = []
+                    items = []
                     for chunk2 in sentence:
                         if chunk2.ID in chunk.srcs:
+                            before_cases_num = len(cases)
                             [cases.append(morph2.surface) for morph2 in chunk2.morphs if morph2.pos == '助詞']
+                            if len(cases) > before_cases_num:
+                                items.append(chunk2)
 
                     # 結果を出力
                     if not len(cases) == 0:
                         fout.write('{0}\t'.format(predicate.base))
                         [fout.write('{0} '.format(case)) for case in cases]
+                        fout.write('\t')
+                        [fout.write('{0} '.format(item.get_surface())) for item in items]
                         fout.write('\n')
 
     fin.close()

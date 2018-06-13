@@ -10,18 +10,18 @@ if __name__ == '__main__':
     sentences = []
     [sentences.append(morph.text2chunks(text)) for text in texts]
 
-    [chunk.print_all() for chunk in sentences[7]]
+    [chunk.print_all() for chunk in sentences[49]]
 
     # formatはpngを指定(他にはPDF, PNG, SVGなどが指定可)
     G = Digraph(format='png')
     G.attr('node', shape='circle')
 
     # ノードの追加
-    for i, chunk in enumerate(sentences[7]):
+    for i, chunk in enumerate(sentences[49]):
         G.node(str(i), chunk.get_surface())
 
     #エッジの追加
-    for i, chunk in enumerate(sentences[7]):
+    for i, chunk in enumerate(sentences[49]):
         if chunk.dst != '-1':
             G.edge(str(i), chunk.dst)
 

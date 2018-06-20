@@ -1,25 +1,48 @@
 import re
+from copy import deepcopy
 
-class Morph:
-    def __init__(self, surface, base, pos, pos1):
+class Morph():
+    def __init__(self, surface='', base='', pos='', pos1=''):
         self.surface = surface
         self.base = base
         self.pos = pos
         self.pos1 = pos1
         self.all = [self.surface, self.base, self.pos, self.pos1]
+
+    def __deepcopy__(self, memodict={}):
+        copy_obj = Morph()
+        copy_obj.surface = self.surface
+        copy_obj.base = self.base
+        copy_obj.pos = self.pos
+        copy_obj.pos1 = self.pos1
+        copy_obj.all = self.all[:]
+        return copy_obj
+
     def print_all(self):
         print(','.join(self.all))
 
-class Chunk:
-    def __init__(self, morphs, dst, ID):
+
+class Chunk():
+    def __init__(self, morphs=[], dst='', ID=''):
         self.morphs = morphs
         self.dst = dst.strip('D')
         self.ID = ID
         self.srcs = []
         self.all = [self.morphs, self.dst, self.ID, self.srcs]
+
+    def __deepcopy__(self, memodict={}):
+        copy_obj = Chunk()
+        copy_obj.morphs = [deepcopy(morph) for morph in self.morphs]
+        copy_obj.dst = self.dst
+        copy_obj.ID = self.ID
+        copy_obj.srcs = self.srcs[:]
+        copy_obj.all = self.all[:]
+        return copy_obj
+
     def print_all(self):
         [print(morph.surface, end='') for morph in self.morphs]
         print(' ' + self.ID + ',' + self.dst + ',' + '*'.join(self.srcs))
+
     def get_srcs(self, chunks):
         srcs = []
         for chunk in chunks:
@@ -27,11 +50,13 @@ class Chunk:
                 srcs.append(chunk.ID)
 
         return srcs
+
     def get_surface(self):
         result = ""
         for morph in self.morphs:
             result = result + morph.surface
         return result
+
 
 def file2texts(file):
     texts= []
@@ -42,6 +67,7 @@ def file2texts(file):
             texts.append(text)
             text = []
     return texts
+
 
 # 解析情報を分節ごとに分ける
 def devide_text(text):
@@ -60,6 +86,7 @@ def devide_text(text):
 
     return result
 
+
 def text2morphs(text):
     morphs = []
 
@@ -75,6 +102,7 @@ def text2morphs(text):
                 morphs.append(Morph(surface, other.split(',')[6], other.split(',')[0], other.split(',')[1]))
 
     return morphs
+
 
 def text2chunks(text):
     chstrs = devide_text(text)
